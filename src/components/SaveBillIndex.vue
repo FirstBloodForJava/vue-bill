@@ -3,9 +3,9 @@
         <el-calendar v-model="currentDate" @change="handleMonthChange" ref="calendar">
             <!-- 自定义头 -->
             <template #header="{ date }">
-                <span>查询页面 </span>
-                <span :class="['amount, negative']">{{ getMonthlyOutAmount(date) }}</span>
-                <span :class="['amount, positive']">{{ getMonthlyInAmount(date) }}</span>
+                <span>新增页面 </span>
+                <span :class = "['amount, negative']">{{ getMonthlyOutAmount(date) }}</span>
+                <span :class = "['amount, positive']">{{ getMonthlyInAmount(date) }}</span>
                 <span>{{ date }}</span>
                 <el-button-group>
                     <el-button size="small" @click="selectDate('prev-year')">
@@ -27,51 +27,89 @@
             </template>
 
             <template #date-cell="{ data }">
-                <!-- @click="handleCellClick(data.day)" -->
-                <div class="custom-cell" @click="handleDblClick(data.day)" >
+                <div class="custom-cell" @mouseenter="handleMouseEnter(data.day, $event)" @mouseleave="hoverDate = null"
+                    @click="handleCellClick(data.day)">
                     <div class="day-number">{{ data.day.split('-')[2] }}</div>
                     <div
                         :class="['amount', { 'positive': dailyAmounts[data.day] > 0, 'negative': dailyAmounts[data.day] < 0 }]">
                         {{ getDailyAmountCount(data.day) }}
                     </div>
+
+                    <!-- 明细悬浮框 -->
+                    <transition name="fade">
+
+                        <!-- 只有日期和事件的显示 -->
+                        <!-- <div v-if="hoverDate === data.day && dailyDetails[data.day]?.length" class="detail-tooltip"
+                            :style="tooltipStyle">
+                            <div class="tooltip-header">{{ data.day }} 明细</div>
+                            <div class="detail-list">
+                                <div v-for="(detail, index) in dailyDetails[data.day]" :key="index" class="detail-item">
+                                    <span class="time">{{ formatTime(detail.tradeDate) }}</span>
+                                    <span></span>
+                                    <span :class="['detail-amount', {
+                                        'positive': detail.amount > 0,
+                                        'negative': detail.amount < 0
+                                    }]">
+                                        {{ detail.payType }} {{ detail.tradeType }} {{ formatAmount(detail.amount) }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="tooltip-footer">
+                                合计：{{ formatAmount(dailyAmounts[data.day]) }}
+                            </div>
+                        </div> -->
+
+                        <div v-if="hoverDate === data.day && dailyDetails[data.day]?.length" class="detail-tooltip"
+                            :style="tooltipStyle">
+                            <div class="tooltip-header">
+                                <span class="date">{{ data.day }}</span>
+                                <span class="total">合计：{{ formatAmount(dailyAmounts[data.day]) }}</span>
+                            </div>
+
+                            <div class="table-container">
+                                <table class="detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="time-col">时间</th>
+                                            <th class="amount-col">金额</th>
+                                            <th class="type-col">支付方式</th>
+                                            <th class="type-col">交易类型</th>
+                                            <th class="remark-col">说明</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(detail, index) in dailyDetails[data.day]" :key="index"
+                                            class="table-row">
+                                            <td class="time">{{ formatTime(detail.tradeDate) }}</td>
+                                            <td :class="['amount', {
+                                                'positive': detail.amount > 0,
+                                                'negative': detail.amount < 0
+                                            }]">
+                                                {{ formatAmount(detail.amount) }}
+                                            </td>
+                                            <td>
+                                                <span class="type-tag pay-type">
+                                                    {{ detail.payType }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="type-tag trade-type">
+                                                    {{ detail.tradeType }}
+                                                </span>
+                                            </td>
+                                            <td class="remark" :title="detail.rmk">
+                                                {{ detail.rmk || '-' }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </transition>
+
                 </div>
             </template>
         </el-calendar>
-
-        <!-- 每日明细抽屉 -->
-        <el-drawer v-model="detailDrawerVisible" title="每日明细" direction="rtl" size="40%" class="detail-drawer">
-            <div class="detail-content">
-                <div class="detail-header">
-                    <h3>{{ selectedDate }}</h3>
-                    <div class="total-amount">
-                        合计：{{ formatAmount(dailyAmounts[selectedDate] || 0) }}
-                    </div>
-                </div>
-
-                <div class="detail-table">
-                    <el-table :data="selectedDayDetails" height="calc(100vh - 180px)" style="width: 100%" stripe>
-                        <el-table-column prop="tradeDate" label="时间" width="120">
-                            <template #default="{ row }">
-                                {{ formatTime(row.tradeDate) }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="payType" label="支付方式" width="100" />
-                        <el-table-column prop="tradeType" label="交易类型" width="100" />
-                        <el-table-column prop="amount" label="金额" width="120">
-                            <template #default="{ row }">
-                                <span :class="{
-                                    'positive': row.amount > 0,
-                                    'negative': row.amount < 0
-                                }">
-                                    {{ formatAmount(row.amount) }}
-                                </span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="rmk" label="备注" show-overflow-tooltip />
-                    </el-table>
-                </div>
-            </div>
-        </el-drawer>
 
         <!-- 右侧编辑抽屉 -->
         <el-drawer v-model="drawerVisible" title="账单详情" direction="rtl" size="40%" :before-close="handleDrawerClose">
@@ -116,7 +154,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, reactive } from 'vue'
-import { CalendarDateType, CalendarInstance, ElCalendar } from 'element-plus'
+import { CalendarDateType, CalendarInstance, ElCalendar, ElMessage  } from 'element-plus'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
@@ -164,15 +202,6 @@ interface BillForm {
     rmk: string
 }
 
-// 明细抽屉相关
-const detailDrawerVisible = ref(false)
-const selectedDate = ref('')
-const selectedDayDetails = computed(() => dailyDetails.value[selectedDate.value] || [])
-
-const handleDblClick = (date: string) => {
-    selectedDate.value = date
-    detailDrawerVisible.value = true
-}
 
 // 数组处理数据 累加计算 需要解决精度问题
 const dailyAmounts = computed(() => {
@@ -213,9 +242,9 @@ const inMonthlyAmount = computed(() => {
 // 获取每月支出
 const getMonthlyOutAmount = (dateString: string) => {
     console.log(parseChineseYearMonth(dateString));
-
+    
     //console.log(dateString).format('YYYY年MM月')
-
+    
     return outMonthlyAmount.value[parseChineseYearMonth(dateString)] || 0
 }
 const getMonthlyInAmount = (dateString: string) => {
@@ -224,14 +253,14 @@ const getMonthlyInAmount = (dateString: string) => {
 }
 
 function parseChineseYearMonth(input) {
-    // 提取数字部分
-    const match = input.match(/(\d{4})\D*(\d{1,2})\D*/)
-    if (!match) return ''
+  // 提取数字部分
+  const match = input.match(/(\d{4})\D*(\d{1,2})\D*/)
+  if (!match) return ''
 
-    const year = match[1]
-    const month = match[2].padStart(2, '0')
+  const year = match[1]
+  const month = match[2].padStart(2, '0')
 
-    return `${year}-${month}`
+  return `${year}-${month}`
 }
 
 
@@ -342,8 +371,8 @@ const formatTime = (dateString: string) => {
 // 新增功能
 // 表单数据
 const formData = reactive<BillForm>({
-    tradeType: 1,
-    payType: 1,
+    tradeType: undefined,
+    payType: '',
     amount: 0,
     tradeDate: '',
     rmk: ''
@@ -366,14 +395,94 @@ const formRules = {
 
 // 账单分类
 const tradeTypeOptions = [
-    { value: 1, label: '收入' },
-    { value: 2, label: '支出' }
+    { value: '早餐', label: '早餐' },
+    { value: '中餐', label: '中餐' },
+    { value: '晚餐', label: '晚餐' },
+    { value: '买菜', label: '买菜' },
+    { value: '零食', label: '零食' },
+    { value: '饮用水', label: '饮用水' },
+
+
+    { value: '房租', label: '房租' },
+    { value: '水费', label: '水费' },
+    { value: '电费', label: '电费' },
+    { value: '燃气费', label: '燃气费' },
+    { value: '话费', label: '话费' },
+
+    { value: '电瓶车', label: '电瓶车' },
+    { value: '公共交通', label: '公共交通' },
+    { value: '打车费', label: '打车费' },
+
+    { value: '日用品', label: '日用品' },
+    { value: '衣服', label: '衣服' },
+    { value: '鞋子', label: '鞋子' },
+    { value: '箱包', label: '箱包' },
+
+
+    { value: '手机', label: '手机' },
+    { value: '电脑', label: '电脑' },
+    { value: '配件', label: '配件' },
+    { value: '网购非必需品', label: '网购非必需品' },
+
+    { value: '旅游支出', label: '旅游支出' },
+    { value: '酒店', label: '酒店' },
+    { value: '电影', label: '电影' },
+    { value: '其它娱乐', label: '其它娱乐' },
+    { value: '按摩', label: '按摩' },
+    { value: '游戏充值', label: '游戏充值' },
+    { value: '聚餐', label: '聚餐' },
+    { value: '会员支出', label: '会员支出' },
+    { value: '快递支出', label: '快递支出' },
+    { value: '书', label: '书' },
+    { value: '红包收入', label: '红包收入' },
+    { value: '红包支出', label: '红包支出' },
+    { value: '黄牛支出', label: '黄牛支出' },
+    { value: '黄牛收入', label: '黄牛收入' },
+
+    { value: '闲置转卖', label: '闲置转卖' },
+    { value: '取款', label: '取款' },
+    { value: '存款', label: '存款' },
+    { value: '其它支出', label: '其它支出' },
+    { value: '其它收入', label: '其它收入' },
+    { value: '基金买入', label: '基金买入' },
+    { value: '基金卖出', label: '基金卖出' },
+    { value: '微信转账', label: '微信转账' },
+    { value: '借款', label: '借款' },
+    { value: '还款', label: '还款' },
+    { value: '返利', label: '返利' },
+    { value: '礼品', label: '礼品' },
+    { value: '理发', label: '理发' },
+
+    { value: '罚款', label: '罚款' },
+    { value: '驾照', label: '驾照' },
+    { value: '社保', label: '社保' },
+    { value: '医院', label: '医院' },
+    { value: '外卖', label: '外卖' },
+    { value: '退税', label: '退税' },
+    { value: '公积金提现', label: '公积金提现' },
+    { value: '公积金提现', label: '公积金提现' },
+    { value: '公积金提现', label: '公积金提现' },
+    
 ]
 // 支付方式
 const payTypeOptions = [
-    { value: 1, label: '支付宝' },
-    { value: 2, label: '微信支付' },
-    { value: 3, label: '银行卡' }
+    { value: '微信1', label: '微信1' },
+    { value: '支付宝1', label: '支付宝1' },
+    { value: '花呗1', label: '花呗1' },
+    { value: '京东白条', label: '京东白条' },
+    { value: '民生银行信用卡(6707)', label: '民生银行信用卡(6707)' },
+    { value: '光大银行储蓄卡(3807)', label: '光大银行储蓄卡(3807)' },
+    { value: '招商银行信用卡(5295)', label: '招商银行信用卡(5295)' },
+    { value: '招商银行储蓄卡(8616)', label: '招商银行储蓄卡(8616)' },
+    { value: '工商银行储蓄卡(3572)', label: '工商银行储蓄卡(3572)' },
+    { value: '建设银行储蓄卡(0309)', label: '建设银行储蓄卡(0309)' },
+    { value: '农业银行储蓄卡(9571)', label: '农业银行储蓄卡(9571)' },
+    { value: '支付宝2', label: '支付宝2' },
+    { value: '花呗2', label: '花呗2' },
+    { value: '微信2', label: '微信2' },
+    { value: '微信3', label: '微信3' },
+    { value: '抖音支付', label: '抖音支付' },
+    { value: '京东小金库', label: '京东小金库' },
 ]
 
 // 控制抽屉显示
@@ -403,7 +512,9 @@ const handleSubmit = async () => {
 
         console.log(JSON.stringify(formData, null, 2));
 
-        await axios[post](url, formData)
+        const response = await http.post(url, formData)
+
+        console.log(response);
 
         ElMessage.success('创建成功')
         drawerVisible.value = false
@@ -420,8 +531,8 @@ const handleSubmit = async () => {
 const resetForm = () => {
     Object.assign(formData, {
         id: undefined,
-        tradeType: 1,
-        payType: 1,
+        tradeType: undefined,
+        payType: undefined,
         amount: 0,
         tradeDate: '',
         rmk: ''
@@ -516,7 +627,22 @@ const handleDrawerClose = (done: () => void) => {
     padding-bottom: 6px;
 }
 
+.detail-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
 
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
 
 .time {
     color: #666;
@@ -524,6 +650,14 @@ const handleDrawerClose = (done: () => void) => {
 
 .detail-amount {
     font-weight: 500;
+}
+
+.tooltip-footer {
+    margin-top: 8px;
+    padding-top: 8px;
+    font-weight: 500;
+    color: #333;
+    border-top: 1px solid #eee;
 }
 
 .fade-enter-active,
@@ -610,37 +744,5 @@ td {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 200px;
-}
-
-.detail-content {
-    padding: 20px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.detail-header {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.total-amount {
-    font-size: 16px;
-    color: #333;
-    margin-top: 10px;
-}
-
-.detail-table {
-    flex: 1;
-    overflow: hidden;
-}
-
-:deep(.el-table) {
-    height: 100%;
-}
-
-:deep(.el-table__body-wrapper) {
-    overflow-y: auto;
 }
 </style>
