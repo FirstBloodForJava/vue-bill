@@ -175,7 +175,7 @@ const tooltipPosition = ref({ x: 0, y: 0 })
 
 // 创建axios实例
 const http = axios.create({
-    baseURL: 'http://127.0.0.1:8080',
+    baseURL: 'http://47.101.155.205:8080',
     timeout: 60000,
     headers: {
         'Content-Type': 'application/json'
@@ -418,11 +418,10 @@ const tradeTypeOptions = [
     { value: '鞋子', label: '鞋子' },
     { value: '箱包', label: '箱包' },
 
-
+    { value: '眼镜', label: '眼镜' },
     { value: '手机', label: '手机' },
     { value: '电脑', label: '电脑' },
     { value: '配件', label: '配件' },
-    { value: '网购非必需品', label: '网购非必需品' },
 
     { value: '旅游支出', label: '旅游支出' },
     { value: '酒店', label: '酒店' },
@@ -434,8 +433,7 @@ const tradeTypeOptions = [
     { value: '会员支出', label: '会员支出' },
     { value: '快递支出', label: '快递支出' },
     { value: '书', label: '书' },
-    { value: '红包收入', label: '红包收入' },
-    { value: '红包支出', label: '红包支出' },
+    { value: '红包', label: '红包' },
     { value: '黄牛支出', label: '黄牛支出' },
     { value: '黄牛收入', label: '黄牛收入' },
 
@@ -446,6 +444,8 @@ const tradeTypeOptions = [
     { value: '其它收入', label: '其它收入' },
     { value: '基金买入', label: '基金买入' },
     { value: '基金卖出', label: '基金卖出' },
+    { value: '支出', label: '支出' },
+    { value: '收入', label: '收入' },
     { value: '微信转账', label: '微信转账' },
     { value: '借款', label: '借款' },
     { value: '还款', label: '还款' },
@@ -457,10 +457,7 @@ const tradeTypeOptions = [
     { value: '驾照', label: '驾照' },
     { value: '社保', label: '社保' },
     { value: '医院', label: '医院' },
-    { value: '外卖', label: '外卖' },
     { value: '退税', label: '退税' },
-    { value: '公积金提现', label: '公积金提现' },
-    { value: '公积金提现', label: '公积金提现' },
     { value: '公积金提现', label: '公积金提现' },
     
 ]

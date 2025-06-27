@@ -137,7 +137,7 @@ const tooltipPosition = ref({ x: 0, y: 0 })
 
 // 创建axios实例
 const http = axios.create({
-    baseURL: 'http://127.0.0.1:8080',
+    baseURL: 'http://47.101.155.205:8080',
     timeout: 60000,
     headers: {
         'Content-Type': 'application/json'
