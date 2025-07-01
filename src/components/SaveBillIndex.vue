@@ -401,7 +401,16 @@ const tradeTypeOptions = [
     { value: '买菜', label: '买菜' },
     { value: '零食', label: '零食' },
     { value: '饮用水', label: '饮用水' },
+    { value: '聚餐', label: '聚餐' },
 
+    { value: '基金买入', label: '基金买入' },
+    { value: '基金卖出', label: '基金卖出' },
+    { value: '黄牛支出', label: '黄牛支出' },
+    { value: '黄牛收入', label: '黄牛收入' },
+
+    { value: '电瓶车', label: '电瓶车' },
+    { value: '支出', label: '支出' },
+    { value: '收入', label: '收入' },
 
     { value: '房租', label: '房租' },
     { value: '水费', label: '水费' },
@@ -409,54 +418,43 @@ const tradeTypeOptions = [
     { value: '燃气费', label: '燃气费' },
     { value: '话费', label: '话费' },
 
-    { value: '电瓶车', label: '电瓶车' },
+    { value: '会员支出', label: '会员支出' },
     { value: '公共交通', label: '公共交通' },
     { value: '打车费', label: '打车费' },
 
+    { value: '书', label: '书' },
     { value: '日用品', label: '日用品' },
+    { value: '药品', label: '药品' },
     { value: '衣服', label: '衣服' },
     { value: '鞋子', label: '鞋子' },
     { value: '箱包', label: '箱包' },
-
-    { value: '眼镜', label: '眼镜' },
-    { value: '手机', label: '手机' },
-    { value: '电脑', label: '电脑' },
+    
+    { value: '医院', label: '医院' },
     { value: '配件', label: '配件' },
+    { value: '眼镜', label: '眼镜' },
+    { value: '数码电器', label: '数码电器' },
 
+
+    { value: '游戏充值', label: '游戏充值' },
     { value: '旅游支出', label: '旅游支出' },
     { value: '酒店', label: '酒店' },
     { value: '电影', label: '电影' },
-    { value: '其它娱乐', label: '其它娱乐' },
+    { value: '网咖', label: '网咖' },
     { value: '按摩', label: '按摩' },
-    { value: '游戏充值', label: '游戏充值' },
-    { value: '聚餐', label: '聚餐' },
-    { value: '会员支出', label: '会员支出' },
-    { value: '快递支出', label: '快递支出' },
-    { value: '书', label: '书' },
+    
     { value: '红包', label: '红包' },
-    { value: '黄牛支出', label: '黄牛支出' },
-    { value: '黄牛收入', label: '黄牛收入' },
+    { value: '快递', label: '快递' },
 
-    { value: '闲置转卖', label: '闲置转卖' },
     { value: '取款', label: '取款' },
     { value: '存款', label: '存款' },
-    { value: '其它支出', label: '其它支出' },
-    { value: '其它收入', label: '其它收入' },
-    { value: '基金买入', label: '基金买入' },
-    { value: '基金卖出', label: '基金卖出' },
-    { value: '支出', label: '支出' },
-    { value: '收入', label: '收入' },
-    { value: '微信转账', label: '微信转账' },
     { value: '借款', label: '借款' },
     { value: '还款', label: '还款' },
     { value: '返利', label: '返利' },
     { value: '礼品', label: '礼品' },
     { value: '理发', label: '理发' },
 
-    { value: '罚款', label: '罚款' },
+
     { value: '驾照', label: '驾照' },
-    { value: '社保', label: '社保' },
-    { value: '医院', label: '医院' },
     { value: '退税', label: '退税' },
     { value: '公积金提现', label: '公积金提现' },
     
@@ -467,6 +465,7 @@ const payTypeOptions = [
     { value: '支付宝1', label: '支付宝1' },
     { value: '花呗1', label: '花呗1' },
     { value: '京东白条', label: '京东白条' },
+    { value: '同花顺', label: '同花顺' },
     { value: '民生银行信用卡(6707)', label: '民生银行信用卡(6707)' },
     { value: '光大银行储蓄卡(3807)', label: '光大银行储蓄卡(3807)' },
     { value: '招商银行信用卡(5295)', label: '招商银行信用卡(5295)' },
@@ -474,12 +473,14 @@ const payTypeOptions = [
     { value: '工商银行储蓄卡(3572)', label: '工商银行储蓄卡(3572)' },
     { value: '建设银行储蓄卡(0309)', label: '建设银行储蓄卡(0309)' },
     { value: '农业银行储蓄卡(9571)', label: '农业银行储蓄卡(9571)' },
+    { value: '邮储银行储蓄卡(5275)', label: '邮储银行储蓄卡(5275)' },
+    { value: '京东小金库', label: '京东小金库' },
     { value: '支付宝2', label: '支付宝2' },
     { value: '花呗2', label: '花呗2' },
     { value: '微信2', label: '微信2' },
     { value: '微信3', label: '微信3' },
     { value: '抖音支付', label: '抖音支付' },
-    { value: '京东小金库', label: '京东小金库' },
+    
 ]
 
 // 控制抽屉显示
